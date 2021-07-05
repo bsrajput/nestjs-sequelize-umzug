@@ -62,6 +62,7 @@
   "main": "./dist/index.js",
   "name": "nestjs-sequelize-umzug",
   "scripts": {
+    "test": "exit 0",
     "build": "tsc",
     "lint": "eslint . --fix",
     "start": "cross-env NODE_ENV=${NODE_ENV:=development} tsc-watch --onSuccess \"node .\" --onFailure \"echo Compilation Failed\""
