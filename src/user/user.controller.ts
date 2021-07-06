@@ -10,7 +10,7 @@ import { UserModel } from "./user.model";
 @Public()
 @ApiBearerAuth()
 @Controller("/user")
-export class UsersController {
+export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get("/")

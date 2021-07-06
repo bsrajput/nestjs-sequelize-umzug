@@ -9,7 +9,7 @@ import { HttpValidationPipe } from "@trejgun/nest-js-providers";
 import { AppController } from "./app.controller";
 import { DatabaseModule } from "./database/database.module";
 import { HealthModule } from "./health/health.module";
-import { UsersModule } from "./user/user.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   providers: [
@@ -29,7 +29,7 @@ import { UsersModule } from "./user/user.module";
     }),
     DatabaseModule,
     HealthModule,
-    UsersModule,
+    UserModule,
   ],
   controllers: [AppController],
 })
