@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Inject, Injectable, Logger, LoggerService, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 
 import { IUser, UserModel, UserRole, UserStatus } from "./user.model";
@@ -14,6 +14,8 @@ export class UserService {
     @InjectModel(UserModel)
     private userModel: typeof UserModel,
     private readonly configService: ConfigService,
+    @Inject(Logger)
+    private readonly loggerService: LoggerService,
   ) {}
 
   public search(dto: IUserSearchDto): Promise<{ rows: Array<UserModel>; count: number }> {
@@ -48,6 +50,8 @@ export class UserService {
 
     userModel = await this.userModel.build(dto).save();
 
+    this.loggerService.log(`New user registered with email ${dto.email}`);
+
     return userModel;
   }
 
@@ -56,29 +60,29 @@ export class UserService {
     return userModel.save();
   }
 
-  public async import(data: IUserImportDto): Promise<UserModel> {
+  public async import(dto: IUserImportDto): Promise<UserModel> {
     return this.userModel
       .build({
-        ...data,
+        ...dto,
         password: this.createPasswordHash(randomBytes(8).toString("hex")),
         userRole: UserRole.USER,
       })
       .save();
   }
 
-  public async update(where: Partial<IUser>, data: IUserUpdateDto): Promise<UserModel> {
+  public async update(where: Partial<IUser>, dto: Partial<IUserUpdateDto>): Promise<UserModel> {
     const userModel = await this.findOne(where);
 
     if (!userModel) {
       throw new NotFoundException("userNotFound");
     }
 
-    Object.assign(userModel, data);
+    Object.assign(userModel, dto);
     return userModel.save();
   }
 
-  public updatePassword(userModel: UserModel, data: IPasswordDto): Promise<UserModel> {
-    userModel.password = this.createPasswordHash(data.password);
+  public updatePassword(userModel: UserModel, dto: IPasswordDto): Promise<UserModel> {
+    userModel.password = this.createPasswordHash(dto.password);
     return userModel.save();
   }
 

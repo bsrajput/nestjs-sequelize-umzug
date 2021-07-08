@@ -93,10 +93,10 @@ export class AuthService {
 
     const baseUrl = this.configService.get<string>("PUBLIC_FE_URL", "http://localhost:3005");
 
-    // this.emailClientProxy.emit(EmailType.WELCOME, {
-    //   user: userModel,
-    //   baseUrl,
-    // });
+    this.emailClientProxy.emit(EmailType.WELCOME, {
+      user: userModel,
+      baseUrl,
+    });
 
     const tokenEntity = await this.tokenService.getToken(TokenType.EMAIL, userModel);
 
@@ -114,10 +114,10 @@ export class AuthService {
 
     const baseUrl = this.configService.get<string>("PUBLIC_FE_URL", "http://localhost:3005");
 
-    // this.emailClientProxy.emit(EmailType.WELCOME, {
-    //   user: userModel,
-    //   baseUrl,
-    // });
+    this.emailClientProxy.emit(EmailType.WELCOME, {
+      user: userModel,
+      baseUrl,
+    });
 
     if (data.userStatus === UserStatus.PENDING) {
       const tokenEntity = await this.tokenService.getToken(TokenType.EMAIL, userModel);
@@ -164,12 +164,12 @@ export class AuthService {
 
     await this.userService.updatePassword(tokenModel.user, data);
 
-    // const baseUrl = this.configService.get<string>("PUBLIC_FE_URL", "http://localhost:3005");
+    const baseUrl = this.configService.get<string>("PUBLIC_FE_URL", "http://localhost:3005");
 
-    // this.emailClientProxy.emit(EmailType.RESTORE_PASSWORD, {
-    //   user: tokenModel.user,
-    //   baseUrl,
-    // });
+    this.emailClientProxy.emit(EmailType.RESTORE_PASSWORD, {
+      user: tokenModel.user,
+      baseUrl,
+    });
 
     // delete token from db
     await tokenModel.destroy();
