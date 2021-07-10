@@ -1,10 +1,10 @@
 import { ConflictException, Inject, Injectable, Logger, LoggerService, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 
-import { IUser, UserModel, UserRole, UserStatus } from "./user.model";
-import { IUserCreateDto, IUserImportDto, IUserSearchDto, IUserUpdateDto } from "./interfaces";
+import { IUser, UserModel, UserStatus } from "./user.model";
+import { IUserCreateDto, IUserSearchDto, IUserUpdateDto } from "./interfaces";
 import { IPasswordDto } from "../auth/interfaces";
-import { createHash, randomBytes } from "crypto";
+import { createHash } from "crypto";
 import { ConfigService } from "@nestjs/config";
 import { WhereOptions } from "sequelize";
 
@@ -58,16 +58,6 @@ export class UserService {
   public activate(userModel: UserModel): Promise<UserModel> {
     userModel.userStatus = UserStatus.ACTIVE;
     return userModel.save();
-  }
-
-  public async import(dto: IUserImportDto): Promise<UserModel> {
-    return this.userModel
-      .build({
-        ...dto,
-        password: this.createPasswordHash(randomBytes(8).toString("hex")),
-        userRole: UserRole.USER,
-      })
-      .save();
   }
 
   public async update(where: Partial<IUser>, dto: Partial<IUserUpdateDto>): Promise<UserModel> {

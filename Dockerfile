@@ -1,13 +1,30 @@
-FROM node:14-alpine
+FROM node:14-alpine AS base
+LABEL stage=base
 
-WORKDIR /usr/src/app
+RUN apk add \
+  python \
+  build-base \
+  git \
+  bash \
+  curl \
+  gettext \
+  nano \
+  && npm i -g node-gyp
 
-COPY package*.json ./
+FROM base AS deps
+LABEL stage=deps
 
-RUN npm install
+USER node
+RUN mkdir -p /home/node/demo
+WORKDIR /home/node/demo
 
-COPY . .
+COPY --chown=node:node . .
 
-EXPOSE 3000
+RUN npm i && npm run build
 
-CMD npm start
+FROM base as prod
+USER node
+WORKDIR /home/node/demo
+COPY --from=deps --chown=node:node /home/node/demo/. .
+CMD ["npm", "start"]
+

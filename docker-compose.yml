@@ -1,18 +1,42 @@
-version: "3"
+version: "3.3"
 
 services:
-  server:
-    container_name: nestjs-sequelize-umzug
-    image: postgres:12
-    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres:alpine
+    user: root
     ports:
-      - 5432:5432
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "${DATABASE_USER}"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+      POSTGRES_DB: "${DATABASE}"
     volumes:
-      - ./postgres:/var/lib/postgresql/data/
+      - ${BASE_PATH}/postgres:/var/lib/postgresql/data
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    volumes:
+      - ./nginx/ssl:/etc/nginx/ssl/
+      - ./nginx:/etc/nginx/conf.d
+      - ./nginx/log:/var/log/nginx/
+    ports:
+      - "80:80"
+      - "443:443"
+      - "1337:1337"
+
+  demo:
+    container_name: demo
+    command: "npm run start"
     environment:
       POSTGRES_HOST: "${POSTGRES_HOST}"
       POSTGRES_PORT: "${POSTGRES_PORT}"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       POSTGRES_DB: "${POSTGRES_DB}"
-
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - postgres

@@ -18,7 +18,7 @@ import {
   IRestorePasswordDto,
 } from "./interfaces";
 import { AuthModel } from "./auth.model";
-import { IUserCreateDto, IUserImportDto } from "../user/interfaces";
+import { IUserCreateDto } from "../user/interfaces";
 import { TokenService } from "../token/token.service";
 import { TokenType } from "../token/token.model";
 import { IJwt } from "../common/jwt";
@@ -105,29 +105,6 @@ export class AuthService {
       user: userModel,
       baseUrl,
     });
-
-    return userModel;
-  }
-
-  public async import(data: IUserImportDto): Promise<UserModel> {
-    const userModel = await this.userService.import(data);
-
-    const baseUrl = this.configService.get<string>("PUBLIC_FE_URL", "http://localhost:3005");
-
-    this.emailClientProxy.emit(EmailType.WELCOME, {
-      user: userModel,
-      baseUrl,
-    });
-
-    if (data.userStatus === UserStatus.PENDING) {
-      const tokenEntity = await this.tokenService.getToken(TokenType.EMAIL, userModel);
-
-      this.emailClientProxy.emit(EmailType.EMAIL_VERIFICATION, {
-        token: tokenEntity,
-        user: userModel,
-        baseUrl,
-      });
-    }
 
     return userModel;
   }

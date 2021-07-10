@@ -1,4 +1,9 @@
 {
+  "author": {
+    "email": "trejgun+paktolus@gmail.com",
+    "name": "TrejGun",
+    "url": "https://github.com/TrejGun"
+  },
   "dependencies": {
     "@nestjs/common": "8.0.0",
     "@nestjs/config": "1.0.0",
