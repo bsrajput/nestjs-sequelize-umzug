@@ -91,7 +91,7 @@ export class AuthService {
   public async signup(data: IUserCreateDto): Promise<UserModel> {
     const userModel = await this.userService.create(data);
 
-    const baseUrl = this.configService.get<string>("PUBLIC_FE_URL", "http://localhost:3005");
+    const baseUrl = this.configService.get<string>("FE_URL", "http://localhost:8080");
 
     this.emailClientProxy.emit(EmailType.WELCOME, {
       user: userModel,
@@ -123,7 +123,7 @@ export class AuthService {
 
     const tokenEntity = await this.tokenService.getToken(TokenType.PASSWORD, userModel);
 
-    const baseUrl = this.configService.get<string>("PUBLIC_FE_URL", "http://localhost:3005");
+    const baseUrl = this.configService.get<string>("FE_URL", "http://localhost:8080");
 
     this.emailClientProxy.emit(EmailType.FORGOT_PASSWORD, {
       token: tokenEntity,
@@ -141,7 +141,7 @@ export class AuthService {
 
     await this.userService.updatePassword(tokenModel.user, data);
 
-    const baseUrl = this.configService.get<string>("PUBLIC_FE_URL", "http://localhost:3005");
+    const baseUrl = this.configService.get<string>("FE_URL", "http://localhost:8080");
 
     this.emailClientProxy.emit(EmailType.RESTORE_PASSWORD, {
       user: tokenModel.user,
@@ -174,7 +174,7 @@ export class AuthService {
 
     const tokenEntity = await this.tokenService.getToken(TokenType.EMAIL, userModel);
 
-    const baseUrl = this.configService.get<string>("PUBLIC_FE_URL", "http://localhost:3005");
+    const baseUrl = this.configService.get<string>("FE_URL", "http://localhost:8080");
 
     this.emailClientProxy.emit(EmailType.EMAIL_VERIFICATION, {
       token: tokenEntity,

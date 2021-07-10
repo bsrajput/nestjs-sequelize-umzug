@@ -13,12 +13,12 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  const baseUrl = configService.get<string>("FE_URL", "http://localhost:3000");
+  const baseUrl = configService.get<string>("FE_URL", "http://localhost:8080");
 
   app.enableCors({
     origin:
       process.env.NODE_ENV === "development"
-        ? [`http://localhost:3000`, `http://127.0.0.1:3000`, `http://0.0.0.0:3000`]
+        ? [`http://localhost:8080`, `http://127.0.0.1:8080`, `http://0.0.0.0:8080`]
         : [baseUrl],
     credentials: true,
     exposedHeaders: ["Content-Disposition"],
@@ -34,7 +34,7 @@ async function bootstrap() {
   SwaggerModule.setup("swagger", app, document);
 
   const host = configService.get<string>("HOST", "localhost");
-  const port = configService.get<number>("PORT", 3333);
+  const port = configService.get<number>("PORT", 3000);
 
   await app.listen(port, host, () => {
     console.info(`API server is running on http://${host}:${port}`);
